@@ -1,7 +1,6 @@
 # KNAS
-codes for paper "KNAS: Green Neural Architecture Search"
+Codes for paper "KNAS: Green Neural Architecture Search"
 
-**Codebase and data are uploaded in progress. **
 
 KNAS is a green (energy-efficient) Neural Architecture Search (NAS) approach. It contains two steps: coarse-grained selection and fine-grained selection. 
 The first step selects k networks candidates without any training and then fine-grained step selects the best one from the selected candidates via training on downstream tasks. 
@@ -26,22 +25,22 @@ The required data:
 bash scripts-search/NAS-Bench-201/meta-gen.sh NAS-BENCH-201 4
 ```
 
-* The second step is to compute MGM scores for network candidates. The second and the third parameters represent the index range of network candidates (e.g., [0,2000)). The last parameter means random seeds. You can find the details of MGM at function procedure in file exps/NAS-Bench-201/functions.py.  
+* The second step is to compute MGM scores for network candidates. The second and the third parameters represent the index range of network candidates (e.g., [0,500)). The last parameter means random seeds. You can find the details of MGM at function procedure in file exps/NAS-Bench-201/functions.py.  
 
 ```
-CUDA_VISIBLE_DEVICES=0 bash ./scripts-search/NAS-Bench-201/train-models.sh 0     0   2000 -1 '777 888 999'
+CUDA_VISIBLE_DEVICES=0 bash ./scripts-search/NAS-Bench-201/train-models.sh 0     0   500 -1 '777 888 999'
 ```
 
 * The third step is to extract MGM info and save it to the directory: outout/NAS-Bench-201/output/NAS-BENCH-201-4/simplifies/ . 
 
 ```
-CUDA_VISIBLE_DEVICES=0 python3 exps/NAS-Bench-201/statistics.py --mode cal --target_dir 000000-002000-C16-N5
+CUDA_VISIBLE_DEVICES=0 python3 exps/NAS-Bench-201/statistics.py --mode cal --target_dir 000000-00500-C16-N5
 ```
 
 * The last step is to select networks. Since benchmark [NAS-bench-201](https://github.com/D-X-Y/NAS-Bench-201) provides all test results, we directly use validation accuracy to select the best network.  
 
 ```
-python3 cifar10.py --min_network 0 --max_network 2000 
+python3 cifar10.py --min_network 0 --max_network 500 
 
 ```
 
