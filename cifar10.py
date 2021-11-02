@@ -20,7 +20,6 @@ if __name__ == "__main__":
                         help='maximum index of network candidates')
     parser.add_argument('--min_network', default=0, type=int,
                         help='minimum index of network candidates')
-    maxnetwork =  2000
     args = parser.parse_args()
     max_network = args.max_network
     min_network = args.min_network
@@ -32,7 +31,7 @@ if __name__ == "__main__":
         y.append(acc)
         acc_test = results[777].get_eval('ori-test')['accuracy'] #get test accuracy of the i-th network
         y1.append(results[777].get_train()['loss'])
-        xdata  = torch.load('output/NAS-BENCH-201-4/simplifies/architectures/000' + str(i).zfill(3) + '-FULL.pth')
+        xdata  = torch.load('output/NAS-BENCH-201-4/simplifies/architectures/' + str(i).zfill(6) + '-FULL.pth')
 
         odata  = xdata['full']['all_results'][('cifar10', 777)]
         result1 = ResultsCount.create_from_state_dict( odata )

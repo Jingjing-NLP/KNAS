@@ -21,7 +21,6 @@ if __name__ == "__main__":
                         help='maximum index of network candidates')
     parser.add_argument('--min_network', default=0, type=int,
                         help='minimum index of network candidates')
-    maxnetwork =  2000
     args = parser.parse_args()
     max_network = args.max_network
     min_network = args.min_network
