@@ -20,17 +20,36 @@ if __name__ == "__main__":
                         help='maximum index of network candidates')
     parser.add_argument('--min_network', default=0, type=int,
                         help='minimum index of network candidates')
+    parser.add_argument("--topk", default=10, type=int)
     args = parser.parse_args()
     max_network = args.max_network
     min_network = args.min_network
-
-    for i in range(min_network, max_network):
+    topk=args.topk
+    
+    for j in range(4):
+      x = []
+      y = []
+      y1 = []
+      scores = {}
+      print("experiment: ", j)
+      for i in range(100):
+        #print("Experiment ", str(i))
+        i = random.randint(min_network, max_network)
         results = api.query_by_index(i, 'cifar10') # get i-th network info
         info = api.get_more_info(i, 'cifar10-valid', None, True) 
         acc = info['valid-accuracy'] #get validation accuracy of the i-th network
         y.append(acc)
-        acc_test = results[777].get_eval('ori-test')['accuracy'] #get test accuracy of the i-th network
-        y1.append(results[777].get_train()['loss'])
+        if 777 in results:
+            results = results[777]
+        elif 888 in results:
+            results = results[888]
+        elif 999 in results:
+            results = results[999]
+        else:
+            results = results  
+        
+        acc_test = results.get_eval('ori-test')['accuracy'] #get test accuracy of the i-th network
+        y1.append(results.get_train()['loss'])
         xdata  = torch.load('output/NAS-BENCH-201-4/simplifies/architectures/' + str(i).zfill(6) + '-FULL.pth')
 
         odata  = xdata['full']['all_results'][('cifar10', 777)]
@@ -39,15 +58,19 @@ if __name__ == "__main__":
 
         x.append(float(result1.get_train()['loss']))
 
-    new_scores = sorted(scores.items(), key=lambda x:x[0], reverse=True) # rank networks based on MGM scores
-    print("Results of iop-k networks: lists of (validation accuracy, test accuracy)")
-    print(max([item[1] for item in new_scores[:10]]))
+      new_scores = sorted(scores.items(), key=lambda x:x[0], reverse=True) # rank networks based on MGM scores
+      #print("Results of best networks: lists of (validation accuracy, test accuracy)")
+      topk_value = [item[1] for item in new_scores[:topk]]
+      #print(topk_value)
+      top_acc = sorted(topk_value, key=lambda x: x[0], reverse=True)
+      print("The results of the best network:")
+      print(top_acc[0][1])
 
 
-    c,p = stats.spearmanr(np.array(x), np.array(y))
-    print("spearman score between MGM and valid accuracy")
-    print(c,p)
+    #c,p = stats.spearmanr(np.array(x), np.array(y))
+    #print("spearman score between MGM and valid accuracy")
+    #print(c,p)
 
-    c,p = stats.spearmanr(np.array(x), np.array(y1))
-    print("spearman score between MGM and train loss")
-    print(c,p)
+    #c,p = stats.spearmanr(np.array(x), np.array(y1))
+    #print("spearman score between MGM and train loss")
+    #print(c,p)
