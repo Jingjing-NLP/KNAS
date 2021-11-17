@@ -26,18 +26,29 @@ if __name__ == "__main__":
     min_network = args.min_network
     topk=args.topk
     
-    for j in range(4):
+    for j in range(9):
       x = []
       y = []
       y1 = []
       scores = {}
       print("experiment: ", j)
-      for i in range(100):
+      for i in range(300):
         #print("Experiment ", str(i))
         i = random.randint(min_network, max_network)
         results = api.query_by_index(i, 'cifar10') # get i-th network info
-        info = api.get_more_info(i, 'cifar10-valid', None, True) 
-        acc = info['valid-accuracy'] #get validation accuracy of the i-th network
+        results_valid = api.query_by_index(i, 'cifar10-valid')#get_more_info(i, 'cifar10-valid', None, True)
+        #result.get_train()
+        if 777 in results_valid:
+            results_valid = results_valid[777]
+        elif 888 in results_valid:
+            results_valid = results_valid[888]
+        elif 999 in results_valid:
+            results_valid = results_valid[999]
+        else:
+            results_valid = results_valid
+            
+        #print(results[777].get_train())
+        acc = results_valid.get_eval('x-valid', 20)['accuracy']#info['valid-accuracy'] #get validation accuracy of the i-th network
         y.append(acc)
         if 777 in results:
             results = results[777]
@@ -47,7 +58,9 @@ if __name__ == "__main__":
             results = results[999]
         else:
             results = results  
-        
+        #print(results.get_train(20))
+        #print(results)
+        #acc = results.get_eval('x-valid', 20)['accuracy']
         acc_test = results.get_eval('ori-test')['accuracy'] #get test accuracy of the i-th network
         y1.append(results.get_train()['loss'])
         xdata  = torch.load('output/NAS-BENCH-201-4/simplifies/architectures/' + str(i).zfill(6) + '-FULL.pth')
