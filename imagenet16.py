@@ -48,7 +48,7 @@ if __name__ == "__main__":
             results = results[999]
         else:
             results = results
-        acc = results.get_eval('x-valid')['accuracy']
+        acc = results.get_train(20)['loss']
         y.append(acc)
         acc_test = results.get_eval('ori-test')['accuracy']
         y1.append(results.get_train()['loss'])
@@ -65,7 +65,7 @@ if __name__ == "__main__":
       #print("Results of best networks: lists of (validation accuracy, test accuracy)")
       topk_value = [item[1] for item in new_scores[:topk]]
       #print(topk_value)
-      top_acc = sorted(topk_value, key=lambda x: x[0], reverse=True)
+      top_acc = sorted(topk_value, key=lambda x: x[0], reverse=False)
       print("The results of the best network:")
       print(top_acc[0][1])
     # print("Results of iop-k networks: lists of (validation accuracy, test accuracy)")
